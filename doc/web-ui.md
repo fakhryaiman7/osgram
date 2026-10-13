@@ -1,6 +1,6 @@
-# Osintgram Web UI — user guide
+# Osgram Web UI — user guide
 
-A local web interface for Osintgram. You give it an Instagram username, pick
+A local web interface for Osgram. You give it an Instagram username, pick
 what you want to know (or just ask in plain language), and it collects the
 answer from Instagram and lays it out on the page — profile details, follower
 lists, post statistics, maps, heatmaps, media previews.
@@ -485,7 +485,7 @@ from the page, so it's treated as untrusted input. At most 100 files and
 archive rather than failing the whole download.
 
 **Report** is the one to hand to someone else. It's a single HTML file that
-opens in any browser with no server and no Osintgram: a header with target,
+opens in any browser with no server and no Osgram: a header with target,
 mode, request, backend and timestamps, every result card exactly as you
 reviewed it (previews expanded, raw JSON folded into a "Raw data" section),
 and the disclaimer. Interactive controls are stripped; addresses keep their

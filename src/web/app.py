@@ -133,7 +133,7 @@ def _run_tool_call(name: str, args: dict, fn) -> str:
     return fn(**args) if fn else json.dumps({"error": f"unknown tool {name}"})
 
 
-app = FastAPI(title="Osintgram Web")
+app = FastAPI(title="Osgram Web")
 
 # The app is meant for 127.0.0.1 and has no login, which is fine for a tool
 # you run on your own machine - but "local" is exactly what a DNS-rebinding
@@ -869,7 +869,7 @@ def download_media(req: DownloadRequest):
         content, report = download.build_zip(req.urls)
     except download.DownloadError as e:
         raise HTTPException(400, str(e)) from e
-    filename = f"osintgram_{re.sub(r'[^A-Za-z0-9._-]+', '_', req.name)[:60] or 'media'}.zip"
+    filename = f"osgram_{re.sub(r'[^A-Za-z0-9._-]+', '_', req.name)[:60] or 'media'}.zip"
     return Response(
         content,
         media_type="application/zip",

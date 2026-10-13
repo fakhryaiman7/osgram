@@ -1,12 +1,12 @@
-# Osintgram 🔎📸
+# Osgram 🔎📸
 
-[![version](https://img.shields.io/badge/version-2.0-green)](doc/CHANGELOG.md)
+[![version](https://img.shields.io/badge/version-2.1-green)](doc/CHANGELOG.md)
 [![GPLv3](https://img.shields.io/badge/license-GPLv3-blue)](LICENSE)
 [![Python3](https://img.shields.io/badge/python-3.10%2B-red)](https://www.python.org/)
 [![tests](https://github.com/Datalux/Osintgram/actions/workflows/tests.yml/badge.svg)](.github/workflows/tests.yml)
 [![local-first](https://img.shields.io/badge/runs-100%25%20locally-8b5cf6)](#quick-start)
 
-**Point it at an Instagram account and find out who's behind it.** Osintgram
+**Point it at an Instagram account and find out who's behind it.** Osgram
 collects, cross-references and lays out everything a public profile gives away
 — followers, captions, hashtags, geotagged locations, posting habits, public
 contact details — in a web interface you run on your own machine.
@@ -15,7 +15,7 @@ Ask in plain language and a **local AI model** figures out which lookups to
 run. Or don't: pick the commands yourself and skip the model entirely.
 
 <p align="center">
-<img src=".img/web-app.png" width="900" alt="The Osintgram web interface: a terminal-style header, the command picker, and result cards showing profile details and hashtags">
+<img src=".img/web-app.png" width="900" alt="The Osgram web interface: a terminal-style header, the command picker, and result cards showing profile details and hashtags">
 </p>
 
 ---
@@ -44,7 +44,7 @@ click away on every card.
 
 **You can hand the result to someone else.** One button turns a finished search
 into a standalone HTML report that opens in any browser, with no server and no
-Osintgram.
+Osgram.
 
 ---
 
@@ -160,15 +160,15 @@ security problem? Please report it privately instead: see [SECURITY.md](SECURITY
 
 ## Credits
 
-Osintgram is written by **Giuseppe Criscione**
-([Datalux](https://github.com/Datalux)). Version 2.0 rebuilds it around a web
+Osgram is based on Osintgram, originally written by **Giuseppe Criscione**
+([Datalux](https://github.com/Datalux)). Version 2.0+ rebuilds it around a web
 interface and a reusable service layer, and adds the AI mode, the cost controls
 and the newer analyses — see the [changelog](doc/CHANGELOG.md).
 
 It owes a great deal to everyone who has contributed since the first release:
 
 <a href="https://github.com/Datalux/Osintgram/graphs/contributors">
-  <img src="https://contributors-img.web.app/image?repo=Datalux/Osintgram" alt="Osintgram contributors">
+  <img src="https://contributors-img.web.app/image?repo=Datalux/Osintgram" alt="Osgram contributors">
 </a>
 
 Instagram data comes from [HikerAPI](https://hikerapi.com) or

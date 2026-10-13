@@ -123,27 +123,38 @@ class InstagrapiClient:
     def _short_user_to_dict(user) -> dict:
         return {
             "pk": user.pk,
+            "id": user.pk,
             "username": user.username,
             "full_name": user.full_name,
             "is_private": user.is_private,
             "is_verified": user.is_verified,
+            "profile_pic_url": str(getattr(user, "profile_pic_url", "")) if getattr(user, "profile_pic_url", None) else None,
         }
 
     @staticmethod
     def _media_to_dict(media) -> dict:
+        taken_at_val = getattr(media, "taken_at", None)
+        if isinstance(taken_at_val, (int, float)):
+            taken_at_ts = int(taken_at_val)
+        elif hasattr(taken_at_val, "timestamp"):
+            taken_at_ts = int(taken_at_val.timestamp())
+        else:
+            taken_at_ts = None
+
         d = {
-            "id": media.id,
-            "code": media.code,
-            "product_type": media.product_type,
-            "comment_count": media.comment_count or 0,
-            "like_count": media.like_count or 0,
-            "media_type": media.media_type,
+            "id": getattr(media, "id", getattr(media, "pk", None)),
+            "pk": getattr(media, "pk", getattr(media, "id", None)),
+            "code": getattr(media, "code", None),
+            "product_type": getattr(media, "product_type", "feed"),
+            "comment_count": getattr(media, "comment_count", 0) or 0,
+            "like_count": getattr(media, "like_count", 0) or 0,
+            "media_type": getattr(media, "media_type", 1),
             "accessibility_caption": getattr(media, "accessibility_caption", None),
-            "caption": {"text": media.caption_text} if media.caption_text else None,
-            "taken_at": int(media.taken_at.timestamp()) if media.taken_at else None,
+            "caption": {"text": media.caption_text} if getattr(media, "caption_text", None) else None,
+            "taken_at": taken_at_ts,
             # Who posted it: irrelevant for a target's own feed, essential for
             # the hashtag/place searches, where every post has a different author.
-            "user": InstagrapiClient._short_user_to_dict(media.user) if media.user else {},
+            "user": InstagrapiClient._short_user_to_dict(media.user) if getattr(media, "user", None) else {},
             "usertags": [
                 {
                     "user": {

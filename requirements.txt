@@ -2,9 +2,11 @@
 fastapi>=0.110
 uvicorn[standard]>=0.27
 
-# Instagram data backends (either one is enough - see doc/web-ui.md)
-hikerapi==1.8.1
+# Instagram data backend (free session-based client)
 instagrapi>=2.0
+
+# CLI and formatting
+prettytable>=3.0
 
 # Local LLM client, for AI mode (Base mode doesn't need it)
 ollama>=0.3

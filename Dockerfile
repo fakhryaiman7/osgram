@@ -17,6 +17,7 @@ RUN pip3 install --no-cache-dir -r requirements.txt -f /wheels \
   && rm -rf /wheels requirements.txt
 
 COPY --chown=osintgram:osintgram src/ /home/osintgram/src
+COPY --chown=osintgram:osintgram main.py /home/osintgram/main.py
 # Kept in the image so the instagrapi login can be run inside the container:
 #   docker compose run --rm --entrypoint python osintgram scripts/instagrapi_login.py
 COPY --chown=osintgram:osintgram scripts/ /home/osintgram/scripts

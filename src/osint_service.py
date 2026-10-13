@@ -1,3 +1,4 @@
+
 """Side-effect-free OSINT service layer over HikerAPI.
 
 Every method returns a plain, JSON-serializable Python structure instead of
@@ -22,7 +23,8 @@ from typing import Optional
 import httpx
 from geopy.extra.rate_limiter import RateLimiter
 from geopy.geocoders import Nominatim
-from hikerapi import Client as AppClient
+# Paid HikerAPI dependency removed
+AppClient = None
 
 
 class OsintServiceError(Exception):
@@ -1308,69 +1310,34 @@ def mask_token(token: Optional[str]) -> Optional[str]:
 
 
 def hiker_balance() -> Optional[dict]:
-    """Remaining HikerAPI quota as {"requests", "amount", "currency"}, or None
-    when HikerAPI isn't the backend in use. /sys/balance is free (HikerAPI
-    doesn't bill it); the hikerapi client has no method for it, hence its
-    generic _request."""
-    if os.getenv("INSTAGRAM_BACKEND") == "instagrapi":
-        return None
-    token = resolve_hiker_token()
-    if not token:
-        return None
-    client = AppClient(token=token)
-    try:
-        data = client._request("get", "/sys/balance")
-    except Exception as e:
-        raise HikerAPIError(f"balance lookup failed: {e}") from e
-    finally:
-        client._client.close()
-    if not isinstance(data, dict) or "requests" not in data:
-        raise HikerAPIError(f"unexpected /sys/balance response: {str(data)[:200]}")
-    return {"requests": data["requests"], "amount": data.get("amount"), "currency": data.get("currency")}
+    """Remaining HikerAPI quota. HikerAPI has been removed; returns None."""
+    return None
 
 
 def build_service(target: str, backend: Optional[str] = None) -> OsintgramService:
-    """Construct an OsintgramService using the configured backend.
+    """Construct an OsintgramService using the configured provider backend.
 
-    `backend` is "hikerapi", "instagrapi", or None to auto-select (also
-    overridable via the INSTAGRAM_BACKEND env var): prefer HikerAPI if a
-    token is configured, otherwise fall back to instagrapi if a saved
-    session exists.
+    `backend` is "instagrapi", "mock", or None to auto-select via src.providers.
+    HikerAPI is blocked as it is a paid third-party dependency.
     """
     backend = backend or os.getenv("INSTAGRAM_BACKEND")
-
-    use_hikerapi = backend == "hikerapi" or (backend is None and resolve_hiker_token())
-    if use_hikerapi:
-        token = resolve_hiker_token()
-        if not token:
-            raise OsintServiceError(
-                "HikerAPI selected but no token configured: set HIKERAPI_TOKEN or "
-                "config/credentials.ini's [Credentials] hikerapi_token"
-            )
-        return OsintgramService(target, AppClient(token=token))
-
-    if backend in ("instagrapi", None):
-        from src.instagrapi_backend import (
-            InstagrapiBackendError,
-            InstagrapiClient,
-            resolve_instagrapi_credentials,
-            session_exists,
+    if backend == "hikerapi":
+        raise OsintServiceError(
+            "HikerAPI is a paid service and has been removed from Osgram. "
+            "Please use 'instagrapi' (free) or 'mock' instead."
         )
 
-        if not session_exists():
-            raise OsintServiceError(
-                "No backend configured: set HIKERAPI_TOKEN for HikerAPI, or run "
-                "`python scripts/instagrapi_login.py` once to use instagrapi instead"
-            )
-        username, password = resolve_instagrapi_credentials()
-        if not username or not password:
-            raise OsintServiceError(
-                "instagrapi session found but no username/password configured "
-                "in config/credentials.ini's [Credentials] section"
-            )
-        try:
-            return OsintgramService(target, InstagrapiClient(username, password))
-        except InstagrapiBackendError as e:
-            raise OsintServiceError(str(e)) from e
+    from src.providers import get_provider
 
-    raise OsintServiceError(f"Unknown INSTAGRAM_BACKEND: {backend!r} (expected hikerapi or instagrapi)")
+    try:
+        provider = get_provider(backend)
+        return OsintgramService(target, provider)
+    except Exception as e:
+        raise OsintServiceError(str(e)) from e
+
+
+def __getattr__(name):
+    if name == "app":
+        from src.web.app import app
+        return app
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
