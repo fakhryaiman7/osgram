@@ -1,183 +1,264 @@
-# Osgram 🔎📸
-
-[![version](https://img.shields.io/badge/version-2.1-green)](doc/CHANGELOG.md)
-[![GPLv3](https://img.shields.io/badge/license-GPLv3-blue)](LICENSE)
-[![Python3](https://img.shields.io/badge/python-3.10%2B-red)](https://www.python.org/)
-[![tests](https://github.com/Datalux/Osintgram/actions/workflows/tests.yml/badge.svg)](.github/workflows/tests.yml)
-[![local-first](https://img.shields.io/badge/runs-100%25%20locally-8b5cf6)](#quick-start)
-
-**Point it at an Instagram account and find out who's behind it.** Osgram
-collects, cross-references and lays out everything a public profile gives away
-— followers, captions, hashtags, geotagged locations, posting habits, public
-contact details — in a web interface you run on your own machine.
-
-Ask in plain language and a **local AI model** figures out which lookups to
-run. Or don't: pick the commands yourself and skip the model entirely.
+# Osgram
 
 <p align="center">
-<img src=".img/web-app.png" width="900" alt="The Osgram web interface: a terminal-style header, the command picker, and result cards showing profile details and hashtags">
+  <img src="docs/images/osgram-banner.png" alt="Osgram Banner" width="100%">
+</p>
+
+<p align="center">
+  <strong>Open-source intelligence (OSINT) and public profile analysis suite for Instagram.</strong><br>
+  Maintained by <strong><a href="https://github.com/fakhryaiman7">FakhryAiman</a></strong>.
+</p>
+
+<p align="center">
+  <a href="doc/CHANGELOG.md"><img src="https://img.shields.io/badge/version-2.1-06b6d4?style=flat-square" alt="Version 2.1"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPLv3-8b5cf6?style=flat-square" alt="License GPLv3"></a>
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.10%2B-blue?style=flat-square" alt="Python 3.10+"></a>
+  <a href="#overview"><img src="https://img.shields.io/badge/architecture-local--first-10b981?style=flat-square" alt="Local First"></a>
+  <a href="https://github.com/fakhryaiman7"><img src="https://img.shields.io/badge/maintainer-FakhryAiman-06b6d4?style=flat-square&logo=github" alt="Maintainer FakhryAiman"></a>
 </p>
 
 ---
 
-## Why you might like it
+## Overview
 
-**It answers questions, not just commands.** *"How many followers do they have and which
-hashtags do they use most?"* runs three lookups and comes back with a written answer —
-and the raw results underneath, so you can check the work instead of trusting
-the prose.
+**Osgram** is a modular, local-first OSINT investigation platform designed for reconnaissance and forensic analysis of public Instagram accounts. It extracts, cross-references, and organizes public metadata—including followers, followings, engagement patterns, caption linguistics, hashtags, geotagged coordinates, and contact details—into a modern, dark-themed dashboard as well as a scriptable terminal CLI.
 
-**Nothing leaves your machine except the lookups themselves.** The AI runs
-locally through [Ollama](https://ollama.com): no OpenAI key, no subscription, no
-prompt of yours sent to anyone. The interface is served from `127.0.0.1`.
-
-**It tells you what a search will cost before you run it.** Instagram data
-isn't free, and most tools let you find out the expensive way. This one prices
-your selection up front, shows your remaining credit, caches every request so
-you never pay twice for the same lookup, and lets you cap or stop a run —
-server-side, not just in the browser.
-
-**It shows you what it found, properly.** Post thumbnails in a filterable grid,
-geotagged locations on a map, a weekday × hour heatmap of when someone posts,
-comparison between two accounts. Not a wall of JSON — though the JSON is one
-click away on every card.
-
-**You can hand the result to someone else.** One button turns a finished search
-into a standalone HTML report that opens in any browser, with no server and no
-Osgram.
+Unlike legacy scripts that dump raw, unformatted text or rely on expensive third-party cloud subscriptions, Osgram operates **100% locally on your machine** (`127.0.0.1`), utilizes a decoupled provider architecture (supporting direct Instagram sessions via `instagrapi` and offline synthetic testing via `mock`), caches queries in an internal SQLite database, and offers historical dossier comparisons.
 
 ---
 
-## Two ways to drive it
+## Features
+
+- **Intuitive Web Dashboard**: Clean dark-mode single-page interface with real-time feedback, reactive status logs, and responsive layout.
+- **Profile Overview & Deep Analytics**: Displays full HD avatar previews, verified/business/privacy flags, follower/following ratios, biography with extracted hyperlinks, and public contact signals (email, phone, address).
+- **28 Modular OSINT Capabilities**:
+  - **Profile Intelligence**: Account metadata, story highlights, user photos, and full-resolution profile images.
+  - **Network & Social Graph**: Followers, followings, mutual connections comparison (`compare_with`), tagged users, and frequent commenters.
+  - **Content & Behavioral Metrics**: Top hashtags, caption texts, total like/comment counts, media type distributions, and photo descriptions.
+  - **Temporal & Geospatial Intelligence**: Visual weekday × hour posting heatmaps and interactive Leaflet/OpenStreetMap coordinate mapping for tagged locations.
+  - **Target-Free Reconnaissance**: Query public posts by specific hashtags (`search_hashtag`) or geographic locations (`search_location`).
+- **Provider Architecture**:
+  - **`instagrapi`**: Free, direct Instagram connection leveraging persistent session files.
+  - **`mock`**: Deterministic offline provider for unit testing, CI pipelines, and demo environments without touching Instagram networks.
+- **Dossier System & Historical Diffs**: Save snapshot dossiers of profiles over time and perform instant differential audits ("What Changed") to spot follower count drops, renamed handles, bio edits, and deleted posts.
+- **Local Request Caching**: SQLite-backed request cache (`cache/requests.sqlite3`) preventing duplicate upstream requests and rate-limiting triggers.
+- **Data & Media Exporter**: Instant single-click export of structured intelligence to formatted JSON, Excel-safe CSV tables, and bundled ZIP archives of original media.
+
+---
+
+## Screenshots
 
 <p align="center">
-<img src=".img/web-commands.png" width="860" alt="Base mode: 28 commands in three columns, grouped and collapsible, with a search box">
+  <img src="docs/images/osgram-overview.png" alt="Osgram Profile Overview" width="95%">
+  <br>
+  <em>Figure 1: Osgram Profile Overview with identity metrics, formatted biography, and quick presets.</em>
 </p>
 
-**AI mode** — describe what you want. A local model picks the commands, runs
-them and summarizes. It can only choose from the same list below; it can't
-invent lookups or make up data.
+<p align="center">
+  <img src="docs/images/osgram-tools.png" alt="Osgram Advanced Tools" width="95%">
+  <br>
+  <em>Figure 2: Advanced Tools command picker grouped by investigation domain with parameter controls.</em>
+</p>
 
-**Base mode** — no model, no Ollama needed. All 28 commands, one line each,
-grouped and searchable. Tick what you want, set the parameters, run them in
-order.
-
-You can also leave the username empty in AI mode and just ask about a hashtag
-or a place — those searches belong to no account.
-
----
-
-## What you can find out
-
-| | |
-|---|---|
-| **Profile** | Bio and every link in it, follower/following/post counts, category, public email, phone and business address down to the coordinates, linked Facebook id — plus Instagram's own *About this account*: country of registration, creation date, how many times the username changed |
-| **Network** | Followers and followings, accounts Instagram suggests as related, who tagged them, who they tagged, who comments most — and **mutual connections** between two accounts |
-| **Content** | Hashtags ranked by use, captions, every comment, like and comment statistics, photo/video/carousel breakdown with views and paid partnerships, **posting-times heatmap**, geotagged locations **on a map**, photo alt text |
-| **Contacts** | Public emails and phone numbers among a target's followers or followings |
-| **No target needed** | Posts published with a **hashtag** (top or recent) or from a **place**, and who published them |
-
-Stories, highlights and profile pictures come back as direct CDN links — and
-any card with media in it offers a one-click zip of the originals.
+<p align="center">
+  <img src="docs/images/osgram-results.png" alt="Osgram Analysis Results" width="95%">
+  <br>
+  <em>Figure 3: Interactive analysis results featuring media previews, hashtag rankings, and export utilities.</em>
+</p>
 
 ---
 
-## Quick start
+## Requirements
 
-```bash
-pip install -r requirements.txt
-uvicorn src.web.app:app --host 127.0.0.1 --port 8000 --reload   # or: make run
-```
-
-Open **<http://127.0.0.1:8000>**.
-
-You need a data backend. The page opens on a panel where you can paste a
-[HikerAPI](https://hikerapi.com) key directly — it's verified before it's
-accepted, and can be saved for next time. (A free
-[instagrapi](https://github.com/subzeroid/instagrapi) login works too, using an
-Instagram account of your own — see the guide for the trade-offs.)
-
-For AI mode, install [Ollama](https://ollama.com/download) and pull a
-tool-calling capable model:
-
-```bash
-ollama pull llama3.1:8b     # ~4.7 GB, the default
-```
-
-Base mode works without it.
-
-Prefer containers?
-
-```bash
-docker compose up --build      # or: make docker
-```
-
-Same address, same behaviour — published on `127.0.0.1` only. Your key, cache
-and saved searches stay on the host in `config/`, `cache/` and `dossier/`,
-never inside the image. AI mode reaches an Ollama running on your host.
-
-> $${\color{red}Warning:}$$ This runs on `127.0.0.1` with **no authentication**. It's built to run on your own machine — don't expose it beyond localhost without putting an auth layer in front of it first.
-
-### 📖 [Read the full guide → `doc/web-ui.md`](doc/web-ui.md)
-
-Setup for both backends, every command with its parameters and cost, how to
-keep spending down, exporting and sharing results, all configuration options,
-and troubleshooting.
+| Component | Requirement | Details |
+|---|---|---|
+| **Operating System** | Linux, macOS, or Windows (WSL recommended) | Cross-platform |
+| **Python** | 3.10 or higher | Verified up to Python 3.14 |
+| **Browser** | Chrome, Firefox, Safari, or Edge | For the web interface |
+| **Network** | Outbound HTTPS | Direct connection to Instagram endpoints (not required in `mock` mode) |
+| **Account** | Secondary / Burner Instagram Account | Recommended for `instagrapi` provider |
 
 ---
 
-## Before you use it
+## Installation
 
-**FOR EDUCATIONAL PURPOSE ONLY.** The contributors do not assume any
-responsibility for the use of this tool.
+### Standard Installation
 
-- **Don't use your own or primary Instagram account** with it.
-- **Never commit `config/credentials.ini`** — API keys and Instagram
-  credentials live there. It's git-ignored; keep it that way. If a key has ever
-  been pushed, rotate it: deleting the file doesn't remove it from history.
-- Results contain other people's personal data. Handle them in line with
-  data-protection law (GDPR and equivalents) and Instagram's Terms of Use.
-- You cannot see private profiles. Nothing can. Tools claiming otherwise are
-  scams.
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/fakhryaiman7/osgram.git
+   cd osgram
+   ```
+
+2. **Create and activate a virtual environment:**
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   pip install --upgrade pip
+   pip install -r requirements.txt
+   ```
+
+### Docker Installation
+
+You can also run Osgram in an isolated Docker container:
+
+```bash
+docker compose up --build
+```
+
+The web dashboard will be exposed locally on `http://127.0.0.1:8000`. Credentials and cache directories (`config/`, `cache/`, `dossier/`) are mounted from the host.
 
 ---
 
-## Development
+## Configuration
 
+1. **Initialize the credentials file:**
+   ```bash
+   cp config/credentials.ini.example config/credentials.ini
+   ```
+
+2. **Set up Instagram authentication (`instagrapi` provider):**
+   Open `config/credentials.ini` and provide credentials for a dedicated secondary account:
+   ```ini
+   [Credentials]
+   username = your_secondary_username
+   password = your_secondary_password
+   ```
+
+3. **Generate a persistent session (Recommended):**
+   To handle two-factor authentication (2FA) or challenge prompts cleanly, run the interactive login script once from your terminal:
+   ```bash
+   python scripts/instagrapi_login.py
+   ```
+   This generates `config/instagrapi_session.json`. Future runs will authenticate automatically using this session token without re-entering credentials.
+
+Alternatively, credentials can be supplied via environment variables:
 ```bash
-pip install -r requirements-dev.txt
-python -m pytest
+export INSTAGRAM_USERNAME="your_username"
+export INSTAGRAM_PASSWORD="your_password"
 ```
 
-The test suite runs entirely against synthetic fixtures — no API key, no quota,
-no network. It also checks that the documentation hasn't drifted away from the
-code.
+---
 
-Feature requests and pull requests are welcome — open an issue. Found a
-security problem? Please report it privately instead: see [SECURITY.md](SECURITY.md).
+## Usage
+
+### 1. Web Dashboard (Recommended)
+
+Start the local web application:
+
+```bash
+uvicorn src.web.app:app --host 127.0.0.1 --port 8000 --reload
+# Or using Makefile shortcut:
+make run
+```
+
+Open your browser and navigate to:
+```
+http://127.0.0.1:8000
+```
+
+- **Quick Mode (Profile Overview)**: Enter a target username and select an investigation preset (Overview, Engagement, Network, Geotags, or Full Scan).
+- **Advanced Tools**: Select specific tools from the grouped picker, customize parameters (e.g., scan limits), and review real-time execution steps.
+
+For complete documentation on web features, see [`doc/web-ui.md`](doc/web-ui.md).
+
+### 2. Interactive Terminal CLI
+
+Osgram also retains a terminal interface for headless environments:
+
+```bash
+python3 main.py <target_username>
+```
+
+Type `list` to view available commands, or execute functions directly:
+```text
+Run a code: get_user_info
+Run a code: get_hashtags
+Run a code: get_posting_times
+```
+
+---
+
+## Providers
+
+Osgram utilizes a clean factory pattern (`src/providers/`) to separate data acquisition from analysis logic:
+
+```
+                  ┌────────────────────────┐
+                  │    OsintgramService    │
+                  └───────────┬────────────┘
+                              │
+                  ┌───────────▼────────────┐
+                  │   InstagramProvider    │
+                  │      (Base Interface)  │
+                  └─────┬────────────┬─────┘
+                        │            │
+         ┌──────────────▼─────┐ ┌────▼───────────────┐
+         │ InstagrapiProvider │ │    MockProvider    │
+         │   (Live Session)   │ │  (Offline Fixtures)│
+         └────────────────────┘ └────────────────────┘
+```
+
+1. **`instagrapi` (Default Live Provider)**:
+   - Connects directly to public Instagram endpoints via an active session.
+   - 100% free and self-hosted—no third-party data broker subscription required.
+   - Force via: `export INSTAGRAM_BACKEND=instagrapi`.
+
+2. **`mock` (Offline Testing Provider)**:
+   - Uses local synthetic fixtures for testing, development, and demonstrations.
+   - Requires no credentials, network connectivity, or API tokens.
+   - Force via: `export INSTAGRAM_BACKEND=mock`.
+
+---
+
+## Troubleshooting
+
+- **Login Checkpoint / Challenge**:
+  If Instagram requests email/SMS verification, run `python scripts/instagrapi_login.py` in your terminal to complete the interactive challenge and store the session.
+- **Session Expired (`LoginRequired`)**:
+  Delete `config/instagrapi_session.json` and re-run `python scripts/instagrapi_login.py` to refresh the session.
+- **Rate Limits (`429 Too Many Requests`)**:
+  Osgram automatically caches responses in `cache/requests.sqlite3`. Avoid scanning thousands of accounts rapidly with a new burner account; adjust scan limits using the UI options.
+- **Port Conflict**:
+  If port `8000` is occupied, specify an alternate port:
+  ```bash
+  uvicorn src.web.app:app --host 127.0.0.1 --port 8080
+  ```
+
+---
+
+## Roadmap
+
+- [ ] Automated network relationship graph visualization (interactive node charts).
+- [ ] Export directly to structured PDF and forensic Markdown dossier reports.
+- [ ] Multi-account simultaneous tracking and comparison matrices.
+- [ ] Configurable proxy support (HTTP/SOCKS5) per provider session.
 
 ---
 
 ## Credits
 
-Osgram is based on Osintgram, originally written by **Giuseppe Criscione**
-([Datalux](https://github.com/Datalux)). Version 2.0+ rebuilds it around a web
-interface and a reusable service layer, and adds the AI mode, the cost controls
-and the newer analyses — see the [changelog](doc/CHANGELOG.md).
+Osgram builds upon the foundation of **Osintgram**, originally authored by **Giuseppe Criscione** ([Datalux](https://github.com/Datalux)).
 
-It owes a great deal to everyone who has contributed since the first release:
+### Major Modifications & Enhancements by FakhryAiman:
+- **Architecture Refactoring**: Rebuilt the monolithic architecture into a clean, decoupled provider abstraction layer (`src/providers/`).
+- **Free, Self-Hosted Engine**: Completely decoupled the application from paid third-party API dependencies (such as HikerAPI), replacing it with resilient `instagrapi` session management and synthetic `mock` providers.
+- **Modern Web Dashboard**: Designed and implemented a responsive, dark-mode analytical web dashboard with interactive Leaflet maps, posting heatmaps, and live progress streaming.
+- **Dossier & Differential Engine**: Introduced the dossier snapshot system allowing researchers to audit profile evolution over time.
+- **Performance & Caching**: Engineered SQLite-backed localized request caching and export tools (JSON, CSV, ZIP).
 
-<a href="https://github.com/Datalux/Osintgram/graphs/contributors">
-  <img src="https://contributors-img.web.app/image?repo=Datalux/Osintgram" alt="Osgram contributors">
-</a>
+---
 
-Instagram data comes from [HikerAPI](https://hikerapi.com) or
-[instagrapi](https://github.com/subzeroid/instagrapi). Geocoding by
-[Nominatim](https://nominatim.org) / [OpenStreetMap](https://www.openstreetmap.org/copyright).
-Maps by [Leaflet](https://leafletjs.com). Local models via
-[Ollama](https://ollama.com).
+## License & Disclaimer
 
-Released under the [GPL-3.0](LICENSE) licence.
+This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**. See the [LICENSE](LICENSE) file for complete details.
 
-Instagram is a trademark of Meta Platforms, Inc. This project is not affiliated
-with, endorsed by, or approved by Meta.
+### Legal Disclaimer
+**FOR EDUCATIONAL AND DEFENSIVE OSINT RESEARCH ONLY.**
+This tool is intended strictly for authorized security assessments, digital forensics, and personal privacy auditing of publicly available information. The maintainers assume no liability for misuse, policy violations, or damages resulting from the use of this software. Always adhere to applicable local laws, regulations (such as GDPR), and Instagram's Terms of Service.
+
+*Instagram is a registered trademark of Meta Platforms, Inc. Osgram is an independent research project and is not affiliated with, sponsored by, or endorsed by Meta Platforms, Inc.*
