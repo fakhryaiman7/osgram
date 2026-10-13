@@ -119,10 +119,11 @@ The web dashboard will be exposed locally on `http://127.0.0.1:8000`. Credential
 1. **Initialize the credentials file:**
    ```bash
    cp config/credentials.ini.example config/credentials.ini
+   nano config/credentials.ini
    ```
 
 2. **Set up Instagram authentication (`instagrapi` provider):**
-   Open `config/credentials.ini` and provide credentials for a dedicated secondary account:
+   Configure your credentials inside `config/credentials.ini` using `nano`:
    ```ini
    [Credentials]
    username = your_secondary_username
